@@ -13,6 +13,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import com.j256.ormlite.android.AndroidConnectionSource;
+import com.j256.ormlite.support.ConnectionSource;
+
 import net.thequester.android.services.LocationService;
 import net.thequester.model.Quest;
 
@@ -45,7 +48,7 @@ public class MainActivity extends ActionBarActivity {
         serviceIntent.putExtra("Radius",1);
         //startService(serviceIntent);
 
-        new HttpRequestTask().execute();
+        //new HttpRequestTask().execute();
     }
 
     @Override

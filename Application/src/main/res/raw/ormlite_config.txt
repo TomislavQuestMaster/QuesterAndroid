@@ -1,0 +1,19 @@
+#
+#
+# --table-start--
+dataClass=net.thequester.android.model.QuestDetails
+tableName=questDetails
+# --table-fields-start--
+# --field-start--
+fieldName=id
+generatedId=true
+# --field-end--
+# --field-start--
+fieldName=name
+# --field-end--
+# --field-start--
+fieldName=likes
+# --field-end--
+# --table-fields-end--
+# --table-end--
+#################################
