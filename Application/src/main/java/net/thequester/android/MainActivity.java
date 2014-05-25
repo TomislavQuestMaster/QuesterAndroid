@@ -43,7 +43,7 @@ public class MainActivity extends ActionBarActivity {
         serviceIntent.putExtra("Latitude", 45);
         serviceIntent.putExtra("Longitude", 15);
         serviceIntent.putExtra("Radius",1);
-        startService(serviceIntent);
+        //startService(serviceIntent);
 
         new HttpRequestTask().execute();
     }
