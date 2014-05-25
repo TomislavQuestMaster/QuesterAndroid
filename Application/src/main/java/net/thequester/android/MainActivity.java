@@ -1,5 +1,6 @@
 package net.thequester.android;
 
+import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -12,6 +13,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import net.thequester.android.services.LocationService;
+import net.thequester.model.Quest;
+
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 import org.springframework.web.client.RestTemplate;
 
@@ -21,6 +25,8 @@ public class MainActivity extends ActionBarActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        Quest quest = new Quest();
 
         if (savedInstanceState == null) {
             getSupportFragmentManager().beginTransaction()
@@ -32,6 +38,13 @@ public class MainActivity extends ActionBarActivity {
     @Override
     protected void onStart() {
         super.onStart();
+
+        Intent serviceIntent = new Intent(this, LocationService.class);
+        serviceIntent.putExtra("Latitude", 45);
+        serviceIntent.putExtra("Longitude", 15);
+        serviceIntent.putExtra("Radius",1);
+        startService(serviceIntent);
+
         new HttpRequestTask().execute();
     }
 
