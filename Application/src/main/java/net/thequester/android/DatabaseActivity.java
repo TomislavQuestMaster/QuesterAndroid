@@ -1,6 +1,7 @@
 package net.thequester.android;
 
 import android.os.Bundle;
+import android.support.v7.app.ActionBarActivity;
 import android.util.Log;
 import android.widget.TextView;
 
@@ -16,18 +17,19 @@ import java.util.Random;
 /**
  * Author: Tomo
  */
-public class DatabaseActivity extends OrmLiteBaseActivity<DatabaseHelper> {
+public class DatabaseActivity extends ActionBarActivity {
 
-    private final String LOG_TAG = getClass().getSimpleName();
-
+    DatabaseHelper helper;
     /**
      * Called when the activity is first created.
      */
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        Log.i(LOG_TAG, "creating " + getClass() + " at " + System.currentTimeMillis());
         TextView tv = new TextView(this);
+
+        helper = new DatabaseHelper(getApplicationContext());
+
         doSampleDatabaseStuff("onCreate", tv);
         setContentView(tv);
     }
@@ -37,9 +39,8 @@ public class DatabaseActivity extends OrmLiteBaseActivity<DatabaseHelper> {
      */
     private void doSampleDatabaseStuff(String action, TextView tv) {
         // get our dao
-        RuntimeExceptionDao<QuestDetails, Integer> simpleDao = getHelper().getSimpleDataDao();
         // query for all of the data objects in the database
-        List<QuestDetails> list = simpleDao.queryForAll();
+        List<QuestDetails> list = helper.GetData();
         // our string builder for building the content-view
         StringBuilder sb = new StringBuilder();
         sb.append("got ").append(list.size()).append(" entries in ").append(action).append("\n");
@@ -52,8 +53,9 @@ public class DatabaseActivity extends OrmLiteBaseActivity<DatabaseHelper> {
             simpleC++;
         }
         sb.append("------------------------------------------\n");
+        String LOG_TAG = "DBA";
         for (QuestDetails simple : list) {
-            simpleDao.delete(simple);
+            helper.delete(simple);
             sb.append("deleted id ").append(simple.getName()).append("\n");
             Log.i(LOG_TAG, "deleting simple(" + simple.getName() + ")");
             simpleC++;
@@ -69,7 +71,7 @@ public class DatabaseActivity extends OrmLiteBaseActivity<DatabaseHelper> {
             QuestDetails simple = new QuestDetails();
             simple.setName("ivo");
             // store it in the database
-            simpleDao.create(simple);
+            helper.addData(simple);
             Log.i(LOG_TAG, "created simple(" + millis + ")");
             // output it
             sb.append("------------------------------------------\n");

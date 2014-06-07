@@ -4,6 +4,7 @@ import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.util.Log;
 
+import com.google.android.gms.plus.model.people.Person;
 import com.j256.ormlite.android.apptools.OrmLiteSqliteOpenHelper;
 import com.j256.ormlite.dao.Dao;
 import com.j256.ormlite.dao.RuntimeExceptionDao;
@@ -14,12 +15,14 @@ import net.thequester.android.R;
 import net.thequester.android.model.QuestDetails;
 
 import java.sql.SQLException;
+import java.util.List;
 
 /**
  * Author: Tomo
  */
 public class DatabaseHelper extends OrmLiteSqliteOpenHelper {
 
+    private Context context;
     // name of the database file for your application -- change to something appropriate for your app
     private static final String DATABASE_NAME = "helloAndroid.db";
     // any time you make changes to your database objects, you may have to increase the database version
@@ -31,6 +34,7 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper {
 
     public DatabaseHelper(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION, R.raw.ormlite_config);
+        this.context = context;
     }
 
     /**
@@ -107,5 +111,35 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper {
         super.close();
         simpleDao = null;
         simpleRuntimeDao = null;
+    }
+
+
+    //method for list of person
+    public List<QuestDetails> GetData()
+    {
+        DatabaseHelper helper = new DatabaseHelper(context);
+        RuntimeExceptionDao<QuestDetails, Integer> dao = helper.getSimpleDataDao();
+        return dao.queryForAll();
+    }
+
+    //method for insert data
+    public int addData(QuestDetails details)
+    {
+        RuntimeExceptionDao<QuestDetails, Integer> dao = getSimpleDataDao();
+        return dao.create(details);
+    }
+
+    public void delete(QuestDetails details)
+    {
+        RuntimeExceptionDao<QuestDetails, Integer> dao = getSimpleDataDao();
+        dao.delete(details);
+    }
+
+    //method for delete all rows
+    public void deleteAll()
+    {
+        RuntimeExceptionDao<QuestDetails, Integer> dao = getSimpleDataDao();
+        List<QuestDetails> list = dao.queryForAll();
+        dao.delete(list);
     }
 }
