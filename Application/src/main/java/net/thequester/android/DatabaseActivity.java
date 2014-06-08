@@ -5,10 +5,7 @@ import android.support.v7.app.ActionBarActivity;
 import android.util.Log;
 import android.widget.TextView;
 
-import com.j256.ormlite.android.apptools.OrmLiteBaseActivity;
-import com.j256.ormlite.dao.RuntimeExceptionDao;
-
-import net.thequester.android.database.DatabaseHelper;
+import net.thequester.android.database.QuestDetailsDao;
 import net.thequester.android.model.QuestDetails;
 
 import java.util.List;
@@ -19,7 +16,7 @@ import java.util.Random;
  */
 public class DatabaseActivity extends ActionBarActivity {
 
-    DatabaseHelper helper;
+    QuestDetailsDao helper;
     /**
      * Called when the activity is first created.
      */
@@ -28,7 +25,7 @@ public class DatabaseActivity extends ActionBarActivity {
         super.onCreate(savedInstanceState);
         TextView tv = new TextView(this);
 
-        helper = new DatabaseHelper(getApplicationContext());
+        helper = new QuestDetailsDao(getApplicationContext());
 
         doSampleDatabaseStuff("onCreate", tv);
         setContentView(tv);
@@ -40,7 +37,7 @@ public class DatabaseActivity extends ActionBarActivity {
     private void doSampleDatabaseStuff(String action, TextView tv) {
         // get our dao
         // query for all of the data objects in the database
-        List<QuestDetails> list = helper.GetData();
+        List<QuestDetails> list = helper.getAll();
         // our string builder for building the content-view
         StringBuilder sb = new StringBuilder();
         sb.append("got ").append(list.size()).append(" entries in ").append(action).append("\n");
@@ -71,7 +68,7 @@ public class DatabaseActivity extends ActionBarActivity {
             QuestDetails simple = new QuestDetails();
             simple.setName("ivo");
             // store it in the database
-            helper.addData(simple);
+            helper.insert(simple);
             Log.i(LOG_TAG, "created simple(" + millis + ")");
             // output it
             sb.append("------------------------------------------\n");

@@ -4,7 +4,6 @@ import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.util.Log;
 
-import com.google.android.gms.plus.model.people.Person;
 import com.j256.ormlite.android.apptools.OrmLiteSqliteOpenHelper;
 import com.j256.ormlite.dao.Dao;
 import com.j256.ormlite.dao.RuntimeExceptionDao;
@@ -20,7 +19,7 @@ import java.util.List;
 /**
  * Author: Tomo
  */
-public class DatabaseHelper extends OrmLiteSqliteOpenHelper {
+public class QuestDetailsDao extends OrmLiteSqliteOpenHelper {
 
     private Context context;
     // name of the database file for your application -- change to something appropriate for your app
@@ -32,7 +31,7 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper {
     private Dao<QuestDetails, Integer> simpleDao = null;
     private RuntimeExceptionDao<QuestDetails, Integer> simpleRuntimeDao = null;
 
-    public DatabaseHelper(Context context) {
+    public QuestDetailsDao(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION, R.raw.ormlite_config);
         this.context = context;
     }
@@ -44,10 +43,10 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper {
     @Override
     public void onCreate(SQLiteDatabase db, ConnectionSource connectionSource) {
         try {
-            Log.i(DatabaseHelper.class.getName(), "onCreate");
+            Log.i(QuestDetailsDao.class.getName(), "onCreate");
             TableUtils.createTable(connectionSource, QuestDetails.class);
         } catch (SQLException e) {
-            Log.e(DatabaseHelper.class.getName(), "Can't create database", e);
+            Log.e(QuestDetailsDao.class.getName(), "Can't create database", e);
             throw new RuntimeException(e);
         }
 
@@ -61,7 +60,7 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper {
         simple = new QuestDetails();
         simple.setName("tomo");
         dao.create(simple);
-        Log.i(DatabaseHelper.class.getName(), "created new entries in onCreate: " + millis);
+        Log.i(QuestDetailsDao.class.getName(), "created new entries in onCreate: " + millis);
     }
 
     /**
@@ -71,12 +70,12 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper {
     @Override
     public void onUpgrade(SQLiteDatabase db, ConnectionSource connectionSource, int oldVersion, int newVersion) {
         try {
-            Log.i(DatabaseHelper.class.getName(), "onUpgrade");
+            Log.i(QuestDetailsDao.class.getName(), "onUpgrade");
             TableUtils.dropTable(connectionSource, QuestDetails.class, true);
             // after we drop the old databases, we create the new ones
             onCreate(db, connectionSource);
         } catch (SQLException e) {
-            Log.e(DatabaseHelper.class.getName(), "Can't drop databases", e);
+            Log.e(QuestDetailsDao.class.getName(), "Can't drop databases", e);
             throw new RuntimeException(e);
         }
     }
@@ -114,16 +113,21 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper {
     }
 
 
-    //method for list of person
-    public List<QuestDetails> GetData()
+    public List<QuestDetails> getAll()
     {
-        DatabaseHelper helper = new DatabaseHelper(context);
+        QuestDetailsDao helper = new QuestDetailsDao(context);
         RuntimeExceptionDao<QuestDetails, Integer> dao = helper.getSimpleDataDao();
         return dao.queryForAll();
     }
 
-    //method for insert data
-    public int addData(QuestDetails details)
+    public List<QuestDetails> getByName(String name) throws SQLException {
+        QuestDetailsDao helper = new QuestDetailsDao(context);
+        RuntimeExceptionDao<QuestDetails, Integer> dao = helper.getSimpleDataDao();
+
+        return dao.queryBuilder().where().eq("name",name).query();
+    }
+
+    public int insert(QuestDetails details)
     {
         RuntimeExceptionDao<QuestDetails, Integer> dao = getSimpleDataDao();
         return dao.create(details);

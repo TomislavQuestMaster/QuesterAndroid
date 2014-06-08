@@ -16,6 +16,7 @@ import android.widget.TextView;
 import com.j256.ormlite.android.AndroidConnectionSource;
 import com.j256.ormlite.support.ConnectionSource;
 
+import net.thequester.android.communication.RestCommunicator;
 import net.thequester.android.services.LocationService;
 import net.thequester.model.Quest;
 
@@ -23,6 +24,8 @@ import org.springframework.http.converter.json.MappingJackson2HttpMessageConvert
 import org.springframework.web.client.RestTemplate;
 
 public class MainActivity extends ActionBarActivity {
+
+    private RestCommunicator communicator = new RestCommunicator();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -45,7 +48,7 @@ public class MainActivity extends ActionBarActivity {
         Intent serviceIntent = new Intent(this, LocationService.class);
         serviceIntent.putExtra("Latitude", 45);
         serviceIntent.putExtra("Longitude", 15);
-        serviceIntent.putExtra("Radius",1);
+        serviceIntent.putExtra("Radius", 1);
         //startService(serviceIntent);
 
         //new HttpRequestTask().execute();
@@ -91,16 +94,7 @@ public class MainActivity extends ActionBarActivity {
     private class HttpRequestTask extends AsyncTask<Void, Void, Greeting> {
         @Override
         protected Greeting doInBackground(Void... params) {
-            try {
-                final String url = "http://rest-service.guides.spring.io/greeting";
-                RestTemplate restTemplate = new RestTemplate();
-                restTemplate.getMessageConverters().add(new MappingJackson2HttpMessageConverter());
-                return restTemplate.getForObject(url, Greeting.class);
-            } catch (Exception e) {
-                Log.e("MainActivity", e.getMessage(), e);
-            }
-
-            return null;
+            return communicator.fetchGreeting();
         }
 
         @Override
