@@ -1,6 +1,7 @@
-.gradle
 /local.properties
 /.idea
+/gradle
+/build
 .DS_Store
 
 # built application files
@@ -29,5 +30,9 @@ proguard/
 *.ipr
 *.iws
 .idea/
+*.properties
+gradle.properties
+gradlew
+gradlew.bat
 
 
